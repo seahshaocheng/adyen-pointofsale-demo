@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">AdyenPointOfSale</string>
+    <string name="adyen_terminalflee_test" />
+</resources>
