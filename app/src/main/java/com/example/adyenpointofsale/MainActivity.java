@@ -1,11 +1,31 @@
 package com.example.adyenpointofsale;
 
-import androidx.appcompat.app.AppCompatActivity;
+import static java.security.AccessController.getContext;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+
+import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TableLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.adyen.Client;
 import com.adyen.Config;
@@ -20,41 +40,137 @@ import com.adyen.model.nexo.PaymentTransaction;
 import com.adyen.model.nexo.SaleData;
 import com.adyen.model.nexo.SaleToPOIRequest;
 import com.adyen.model.nexo.TransactionIdentification;
+import com.adyen.model.posterminalmanagement.GetStoresUnderAccountResponse;
+import com.adyen.model.posterminalmanagement.GetTerminalsUnderAccountRequest;
+import com.adyen.model.posterminalmanagement.GetTerminalsUnderAccountResponse;
+import com.adyen.model.posterminalmanagement.MerchantAccount;
+import com.adyen.model.posterminalmanagement.Store;
 import com.adyen.model.terminal.TerminalAPIRequest;
 import com.adyen.model.terminal.TerminalAPIResponse;
 import com.adyen.model.terminal.security.SecurityKey;
+import com.adyen.service.PosTerminalManagement;
 import com.adyen.service.TerminalCloudAPI;
 import com.adyen.service.TerminalLocalAPI;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.apache.commons.codec.binary.StringUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.text.BreakIterator;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    public int serviceIdNumber = 10000;
+    public float orderTotal = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                 .permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        //initiating certification
+
+        //Printing current WIFI connection
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        String ssid = null;
+        if(networkInfo.isConnected()){
+            final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            final WifiInfo connectionInfo = wifiManager.getConnectionInfo();
+            if (connectionInfo != null && !connectionInfo.getSSID().isEmpty()) {
+                ssid = connectionInfo.getSSID();
+                TextView SSIDLabel = (TextView) findViewById(R.id.WifiConnected);
+                SSIDLabel.setText(ssid);
+            }
+        }
+
+        //this.getTerminals();
+
+        //Prepping available terminals dropdown list
+        Spinner availableTerminals = findViewById(R.id.availableTerminals);
+        List <String> terminals = this.getTerminals();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, terminals);
+        //set the spinners adapter to the previously created one.
+        availableTerminals.setAdapter(adapter);
+    }
+
+    private List<String> getTerminals(){
+        List<String> inStoreTerminals = new ArrayList();
+
+        Config config = new Config();
+        config.setMerchantAccount("MarkSeahSG");
+        config.setApiKey("AQEyhmfxKIvPbRJAw0m/n3Q5qf3VaY9UCJ1+XWZe9W27jmlZil1pdYlY+w+RwJkDxpQiwd8QwV1bDb7kfNy1WIxIIkxgBw==-8Qds9eBD9ImdlLEZrRw6UST7YHD9QjiPpoiDxFnVpck=-6nJ93.?6c^)9Krj%");
+        config.setEnvironment(Environment.TEST);
+        config.setPosTerminalManagementApiEndpoint("https://postfmapi-test.adyen.com/postfmapi/terminal");
+
+        Client APIClient = new Client(config);
+        PosTerminalManagement managementAPIClient = new PosTerminalManagement(APIClient);
+
+
+        GetTerminalsUnderAccountRequest request = new GetTerminalsUnderAccountRequest();
+        request.setCompanyAccount("AdyenTechSupport");
+        request.setMerchantAccount("MarkSeahSG");
+
+        try{
+
+            GetTerminalsUnderAccountResponse response = managementAPIClient.getTerminalsUnderAccount(request);
+            List<MerchantAccount> merchantAccountsList = response.getMerchantAccounts();
+            List<Store> availableStores = new ArrayList<>();
+
+            for(int i = 0 ; i< merchantAccountsList.size(); i ++ ){
+                List<Store> store = merchantAccountsList.get(i).getStores();
+                availableStores.addAll(store);
+            }
+
+            Log.i("available store", Integer.toString(availableStores.size()) );
+            for (int j = 0 ; j < availableStores.size(); j ++){
+                List<String> availableInStoreTerminals = availableStores.get(j).getInStoreTerminals();
+                inStoreTerminals.addAll(availableInStoreTerminals);
+            }
+        }
+        catch (Exception e){
+            System.out.println("EXCEPTION!");
+            Toast.makeText(getApplicationContext(), "Something went wrong when getting list of terminals", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+        return inStoreTerminals;
     }
 
     private SaleToPOIRequest generatePOIRequest() {
+        Random rnd = new Random();
+        int number = rnd.nextInt(999999);
+
+        //Get POI ID
+        Spinner availableSpinner = (Spinner)findViewById(R.id.availableTerminals);
+        String selectedPOI = availableSpinner.getSelectedItem().toString();
+
         String saleID = "AndroidOne";
-        String serviceID = "TEST"+Integer.toString(this.serviceIdNumber);
-        this.serviceIdNumber++;
-        String POIID = "V400m-346981680";
-        String transactionID = "Android1";
+        String serviceID = "TEST"+Integer.toString(number);
+        String POIID = selectedPOI;
+        String transactionID = "AndroidOne"+Integer.toString(number);
 
         SaleToPOIRequest saleToPOIRequest = new SaleToPOIRequest();
         MessageHeader messageHeader = new MessageHeader();
@@ -82,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
         PaymentTransaction paymentTransaction = new PaymentTransaction();
         AmountsReq amountsReq = new AmountsReq();
         amountsReq.setCurrency("SGD");
-        amountsReq.setRequestedAmount( BigDecimal.valueOf(20.99) );
+        amountsReq.setRequestedAmount( BigDecimal.valueOf(orderTotal) );
         paymentTransaction.setAmountsReq(amountsReq);
         paymentRequest.setPaymentTransaction(paymentTransaction);
         saleToPOIRequest.setPaymentRequest(paymentRequest);
@@ -90,12 +206,36 @@ public class MainActivity extends AppCompatActivity {
         return saleToPOIRequest;
     }
 
-    public void makeLocalPayment(View view) throws FileNotFoundException, CertificateException {
+    public void AddToCart(View view) {
+        switch (view.getId()) {
+            case (R.id.plus1):
+                //stuff
+                orderTotal+=1;
+                break;
+            case (R.id.plus2):
+                //stuff
+                orderTotal+=2;
+                break;
+            case (R.id.plus4):
+                //stuff
+                orderTotal+=4;
+                break;
+            case (R.id.plus5):
+                //stuff
+                orderTotal+=5;
+                break;
+        }
+        TextView total = (TextView) findViewById(R.id.totalField);
+        total.setText(Float.toString(orderTotal));
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void makeLocalPayment(String localIPAddress) throws FileNotFoundException, CertificateException {
         Log.e("Info","Initiating Local Payment");
         Config config = new Config();
         config.setMerchantAccount("MarkSeahSG");
         config.setTerminalCertificate(getResources().openRawResource(R.raw.adyen_terminalfleet_test));
-        config.setTerminalApiLocalEndpoint("https://10.0.0.3");
+        config.setTerminalApiLocalEndpoint("https://"+localIPAddress);
 
         SecurityKey securityKey = new SecurityKey();
         securityKey.setAdyenCryptoVersion(1);
@@ -111,19 +251,40 @@ public class MainActivity extends AppCompatActivity {
         TerminalAPIRequest terminalApiRequest = new TerminalAPIRequest();
         terminalApiRequest.setSaleToPOIRequest(saleToPOIRequest);
         try {
+            Toast.makeText(getApplicationContext(), "Connected to terminal locally, make payment", Toast.LENGTH_SHORT).show();
             TerminalAPIResponse terminalAPIResponse = terminalLocalAPI.request(terminalApiRequest, securityKey);
-            Log.i("Info","The result"+terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getResult());
-            Log.i("Info","The result"+terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getAdditionalResponse());
 
+            if(terminalAPIResponse.getSaleToPOIResponse()!=null){
 
+                Log.i("Info","The result"+terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getResult());
+                Log.i("Info","The result"+terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getAdditionalResponse());
+                Log.i("Info:","Completed Local Connection!");
 
-            Log.i("Info:","Completed Local Connection!");
+                byte[] decoded = Base64.getDecoder().decode(terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getAdditionalResponse());
+                String resultCode = terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getResult().toString();
+
+                if(resultCode.equalsIgnoreCase("success")){
+                    Toast.makeText(getApplicationContext(), "Payment is successful", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    JSONObject additionalData = new JSONObject(new String(decoded));
+                    String message = additionalData.getString("message");
+                    String refusalReason = additionalData.getString("refusalReason");
+                    Toast.makeText(getApplicationContext(), "Payment failed: "+ message +"::"+refusalReason, Toast.LENGTH_LONG).show();
+                }
+            }
+            else{
+                Toast.makeText(getApplicationContext(), "Unable to establish connection with terminal locally", Toast.LENGTH_LONG).show();
+            }
         } catch (Exception e) {
+            System.out.println("EXCEPTION!");
+            Toast.makeText(getApplicationContext(), "Something went wrong when connecting to terminal", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
 
-    public void makePayment(View view) throws FileNotFoundException, CertificateException {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void makeCloudPayment() {
         Log.e("Info","Initiating Cloud Payment");
 
         Config config = new Config();
@@ -139,13 +300,46 @@ public class MainActivity extends AppCompatActivity {
         terminalApiRequest.setSaleToPOIRequest(saleToPOIRequest);
 
         try {
+
             TerminalAPIResponse terminalAPIResponse = terminalCloudAPI.sync(terminalApiRequest);
-            Log.i("Info","The resultCode: "+terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getResult());
-            Log.i("Info","The additionalData"+terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getAdditionalResponse());
-            Log.i("Info:","Completed Cloud Connection!");
+            if(terminalAPIResponse.getSaleToPOIResponse()!= null){
+                byte[] decoded = Base64.getDecoder().decode(terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getAdditionalResponse());
+                String resultCode = terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getResult().toString();
+
+                Log.i("Info","The resultCode: "+terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getResult());
+                Log.i("Info","The additionalData"+new String(decoded));
+                Log.i("Info:","Completed Cloud Connection!");
+
+                if(resultCode.equalsIgnoreCase("success")){
+                    Toast.makeText(getApplicationContext(), "Payment is successful", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    JSONObject additionalData = new JSONObject(new String(decoded));
+                    String message = additionalData.getString("message");
+                    String refusalReason = additionalData.getString("refusalReason");
+                    Toast.makeText(getApplicationContext(), "Payment failed: "+ message +"::"+refusalReason, Toast.LENGTH_LONG).show();
+                }
+            }else{
+                Toast.makeText(getApplicationContext(), "Unable to establish connection with terminal via cloud", Toast.LENGTH_LONG).show();
+            }
         } catch (Exception e) {
             System.out.println("EXCEPTION!");
+            Toast.makeText(getApplicationContext(), "Something went wrong when connecting to terminal", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void makePayment(View view) throws FileNotFoundException, CertificateException {
+        Switch goLocal = (Switch) findViewById(R.id.GoLocal);
+        TextView localIPField = (TextView) findViewById(R.id.LocalIPAddress);
+        Toast.makeText(getApplicationContext(), "Connecting to terminal", Toast.LENGTH_SHORT).show();
+        if(goLocal.isChecked()){
+            Log.i("Info","Going Local");
+            this.makeLocalPayment(localIPField.getText().toString());
+        }
+        else{
+            this.makeCloudPayment();
         }
     }
 }

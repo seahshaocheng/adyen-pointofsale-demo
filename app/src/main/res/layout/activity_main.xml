@@ -1,36 +1,244 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+        <TableLayout
+            android:layout_height="match_parent"
+            android:layout_weight=".6"
+            android:layout_width="0dp"
+            android:paddingLeft="20dp">
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/DemoItemsHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Demo Items:"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <Button
+                    android:id="@+id/plus1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    android:backgroundTint="#EEEEEE"
+                    android:text="One Dollar Item"
+                    android:textColor="#000000"
+                    android:onClick="AddToCart"/>
+                <Button
+                    android:id="@+id/plus2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    android:backgroundTint="#EEEEEE"
+                    android:text="Two Dollar Item"
+                    android:textColor="#000000"
+                    android:onClick="AddToCart"/>
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/CloudPayment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="124dp"
-        android:layout_marginEnd="127dp"
-        android:layout_marginBottom="315dp"
-        android:onClick="makePayment"
-        android:text="Cloud Payment"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+                <Button
+                    android:id="@+id/plus4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    android:backgroundTint="#EEEEEE"
+                    android:onClick="AddToCart"
+                    android:tag="4"
+                    android:text="Five Dollar Item"
+                    android:textColor="#000000" />
+                <Button
+                    android:id="@+id/plus5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    android:backgroundTint="#EEEEEE"
+                    android:text="Six Dollar Item"
+                    android:textColor="#000000"
+                    android:onClick="AddToCart"/>
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight=".8">
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight=".2">
+                <TableLayout
+                    android:layout_width="match_parent">
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:id="@+id/ConfigurationHEader"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Demo Configurations:"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"/>
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <Switch
+                            android:id="@+id/GoLocal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Go For Local Integration"
+                            android:textAlignment="textEnd"
+                            android:textAllCaps="true" />
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:id="@+id/WifiConnectedLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Current Network SSID:" />
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <EditText
+                            android:id="@+id/WifiConnected"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="#CCCCCC"
+                            android:textColor="#CCCCCC"
+                            android:ems="10"
+                            android:focusable="false"
+                            android:inputType="text" />
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:id="@+id/IPAddressLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Terminal IP Address:" />
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <EditText
+                        android:id="@+id/LocalIPAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:inputType="text"
+                            android:text="192.168.1.100"/>
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:id="@+id/SelectTerminalLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Available Terminals:" />
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <Spinner
+                            android:id="@+id/availableTerminals"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </TableRow>
+                </TableLayout>
+            </TableRow>
+        </TableLayout>
+        <TableLayout
+            android:layout_width="0dp"
+            android:layout_weight=".3"
+            android:layout_height="match_parent"
+            android:paddingRight="20dp">
+            <TableRow
+                android:layout_height="0dp"
+                android:layout_weight="0"
+                android:layout_width="match_parent">
+                <TextView
+                    android:id="@+id/orderHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:paddingEnd="0dp"
+                    android:text="Order"
+                    android:textAlignment="viewEnd"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    android:typeface="normal" />
+            </TableRow>
+            <TableRow
+                android:id="@+id/CheckoutItemPanel"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_width="match_parent">
+            </TableRow>
+            <TableRow
+                android:id="@+id/TotalPanel"
+                android:layout_height="0dp"
+                android:layout_weight=".02"
+                android:layout_width="match_parent">
+                <TextView
+                    android:id="@+id/totalLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:paddingEnd="0dp"
+                    android:text="Total:"
+                    android:textAlignment="viewEnd"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    android:typeface="normal" />
+                <TextView
+                    android:id="@+id/totalField"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0.00"
+                    android:textSize="30dp"
+                    android:textStyle="bold"
+                    android:typeface="normal"
+                    android:padding="5dp"/>
+            </TableRow>
+            <TableRow
+                android:id="@+id/buttonPanel"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_weight=".1">
+                <Button
+                    android:id="@+id/CloudPayment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:onClick="makePayment"
+                    android:text="Pay"
+                    android:layout_weight="1"/>
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/localpayment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="126dp"
-        android:layout_marginTop="301dp"
-        android:layout_marginEnd="127dp"
-        android:layout_marginBottom="19dp"
-        android:onClick="makeLocalPayment"
-        android:text="Local Payment"
-        app:layout_constraintBottom_toTopOf="@+id/CloudPayment"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
