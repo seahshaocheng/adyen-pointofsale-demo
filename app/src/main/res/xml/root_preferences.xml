@@ -1,0 +1,45 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory app:title="General">
+        <EditTextPreference
+            app:title="@string/API_KEY"
+            app:key = "api_key"
+            app:useSimpleSummaryProvider="true"
+             />
+        <EditTextPreference
+            app:title="@string/company_account"
+            app:key = "company_account"
+            app:useSimpleSummaryProvider="true"
+            />
+        <EditTextPreference
+            app:title="@string/merchant_account"
+            app:key = "merchant_account"
+            app:useSimpleSummaryProvider="true"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory app:title="Local Integration Settings">
+        <EditTextPreference
+            app:title="@string/crypto_version"
+            app:key = "crypto_version"
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="1"
+            />
+        <EditTextPreference
+            app:title="@string/key_identifier"
+            app:key = "key_identifier"
+            app:useSimpleSummaryProvider="true"
+            />
+        <EditTextPreference
+            app:title="@string/pass_phrase"
+            app:key = "pass_phrase"
+            app:useSimpleSummaryProvider="true"
+            />
+        <EditTextPreference
+            app:title="@string/key_version"
+            app:key = "key_version"
+            app:useSimpleSummaryProvider="true"
+            />
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

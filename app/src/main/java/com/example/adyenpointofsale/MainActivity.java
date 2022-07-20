@@ -5,9 +5,12 @@ import static java.security.AccessController.getContext;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.preference.PreferenceManager;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
@@ -81,10 +84,17 @@ import java.util.Random;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-
 public class MainActivity extends AppCompatActivity {
 
     public float orderTotal = 0;
+    private String api_key=null;
+    private String merchant_account=null;
+    private String company_account = null;
+    private String local_crypto_version=null;
+    private String local_key_version=null;
+    private String local_key_identifier=null;
+    private String local_key_phrase=null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,22 +117,43 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        //this.getTerminals();
+        //Getting preference
+        this.refreshReferences();
 
-        //Prepping available terminals dropdown list
-        Spinner availableTerminals = findViewById(R.id.availableTerminals);
-        List <String> terminals = this.getTerminals();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, terminals);
-        //set the spinners adapter to the previously created one.
-        availableTerminals.setAdapter(adapter);
+        if(this.merchant_account!=null && this.api_key!=null && this.company_account!=null){
+            Log.i("merchant_account",this.merchant_account);
+            Toast.makeText(getApplicationContext(), "Fetching available terminals under "+this.merchant_account, Toast.LENGTH_LONG).show();
+            //Prepping available terminals dropdown list
+            Spinner availableTerminals = findViewById(R.id.availableTerminals);
+            List <String> terminals = this.getTerminals();
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, terminals);
+            //set the spinners adapter to the previously created one.
+            availableTerminals.setAdapter(adapter);
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "Please complete application set up", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(i);
+        }
+    }
+
+    private void refreshReferences(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        this.company_account = prefs.getString("company_account",null);
+        this.merchant_account = prefs.getString("merchant_account",null);
+        this.api_key = prefs.getString("api_key",null);
+        this.local_crypto_version = prefs.getString("crypto_version",null);
+        this.local_key_identifier = prefs.getString("key_identifier",null);
+        this.local_key_phrase = prefs.getString("key_phrase",null);
+        this.local_key_version = prefs.getString("key_version",null);
     }
 
     private List<String> getTerminals(){
         List<String> inStoreTerminals = new ArrayList();
 
         Config config = new Config();
-        config.setMerchantAccount("MarkSeahSG");
-        config.setApiKey("AQEyhmfxKIvPbRJAw0m/n3Q5qf3VaY9UCJ1+XWZe9W27jmlZil1pdYlY+w+RwJkDxpQiwd8QwV1bDb7kfNy1WIxIIkxgBw==-8Qds9eBD9ImdlLEZrRw6UST7YHD9QjiPpoiDxFnVpck=-6nJ93.?6c^)9Krj%");
+        config.setMerchantAccount(this.merchant_account);
+        config.setApiKey(this.api_key);
         config.setEnvironment(Environment.TEST);
         config.setPosTerminalManagementApiEndpoint("https://postfmapi-test.adyen.com/postfmapi/terminal");
 
@@ -131,8 +162,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         GetTerminalsUnderAccountRequest request = new GetTerminalsUnderAccountRequest();
-        request.setCompanyAccount("AdyenTechSupport");
-        request.setMerchantAccount("MarkSeahSG");
+        request.setCompanyAccount(this.company_account);
+        request.setMerchantAccount(this.merchant_account);
 
         try{
 
@@ -231,9 +262,17 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void makeLocalPayment(String localIPAddress) throws FileNotFoundException, CertificateException {
+        this.refreshReferences();
+
+        if(this.local_crypto_version==null || this.local_key_version==null || this.local_key_phrase==null || this.local_key_identifier==null){
+            Toast.makeText(getApplicationContext(), "Please complete local integration set up", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(i);
+        }
+
         Log.e("Info","Initiating Local Payment");
         Config config = new Config();
-        config.setMerchantAccount("MarkSeahSG");
+        config.setMerchantAccount(this.merchant_account);
         config.setTerminalCertificate(getResources().openRawResource(R.raw.adyen_terminalfleet_test));
         config.setTerminalApiLocalEndpoint("https://"+localIPAddress);
 
@@ -288,8 +327,8 @@ public class MainActivity extends AppCompatActivity {
         Log.e("Info","Initiating Cloud Payment");
 
         Config config = new Config();
-        config.setMerchantAccount("MarkSeahSG");
-        config.setApiKey("AQEyhmfxKIvPbRJAw0m/n3Q5qf3VaY9UCJ1+XWZe9W27jmlZil1pdYlY+w+RwJkDxpQiwd8QwV1bDb7kfNy1WIxIIkxgBw==-8Qds9eBD9ImdlLEZrRw6UST7YHD9QjiPpoiDxFnVpck=-6nJ93.?6c^)9Krj%");
+        config.setMerchantAccount(this.merchant_account);
+        config.setApiKey(this.api_key);
 
         Client terminalCloudAPIClient = new Client(config);
         terminalCloudAPIClient.setEnvironment(Environment.TEST,null);
@@ -341,5 +380,19 @@ public class MainActivity extends AppCompatActivity {
         else{
             this.makeCloudPayment();
         }
+    }
+
+    public void fetchTerminalsClick(View view){
+        this.getTerminals();
+        Spinner availableTerminals = findViewById(R.id.availableTerminals);
+        List <String> terminals = this.getTerminals();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, terminals);
+        //set the spinners adapter to the previously created one.
+        availableTerminals.setAdapter(adapter);
+    }
+
+    public void clickSetting(View view){
+        Intent i = new Intent(MainActivity.this, SettingsActivity.class);
+        startActivity(i);
     }
 }

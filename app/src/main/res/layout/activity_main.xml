@@ -169,7 +169,30 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
                     </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <Button
+                            android:id="@+id/fetchterminal"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:onClick="fetchTerminalsClick"
+                            android:text="Fetch Terminals" />
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <Button
+                            android:id="@+id/othersettings"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:onClick="clickSetting"
+                            android:text="Other Settings" />
+                    </TableRow>
                 </TableLayout>
+
             </TableRow>
         </TableLayout>
         <TableLayout
@@ -230,13 +253,14 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_weight=".1">
+
                 <Button
-                    android:id="@+id/CloudPayment"
+                    android:id="@+id/cloudPayment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:onClick="makePayment"
-                    android:text="Pay"
-                    android:layout_weight="1"/>
+                    android:text="Pay" />
             </TableRow>
         </TableLayout>
     </LinearLayout>
