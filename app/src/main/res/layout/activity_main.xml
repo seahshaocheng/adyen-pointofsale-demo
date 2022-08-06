@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/adyen_blue"
     tools:context=".MainActivity">
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,7 +28,7 @@
                     android:text="Demo Items:"
                     android:textSize="20dp"
                     android:textStyle="bold"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/white"/>
             </TableRow>
             <TableRow
                 android:layout_width="match_parent"
@@ -97,7 +98,7 @@
                             android:text="Demo Configurations:"
                             android:textSize="20dp"
                             android:textStyle="bold"
-                            android:textColor="@color/black"/>
+                            android:textColor="@color/white"/>
                     </TableRow>
                     <TableRow
                         android:layout_width="match_parent"
@@ -108,16 +109,8 @@
                             android:layout_height="wrap_content"
                             android:text="Go For Local Integration"
                             android:textAlignment="textEnd"
-                            android:textAllCaps="true" />
-                    </TableRow>
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-                        <TextView
-                            android:id="@+id/WifiConnectedLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Current Network SSID:" />
+                            android:textAllCaps="true"
+                            android:textColor="@color/white"/>
                     </TableRow>
                     <TableRow
                         android:layout_width="match_parent"
@@ -139,17 +132,19 @@
                             android:id="@+id/IPAddressLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Terminal IP Address:" />
+                            android:text="Terminal IP Address:"
+                            android:textColor="@color/white"/>
                     </TableRow>
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
                         <EditText
-                        android:id="@+id/LocalIPAddress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:inputType="text"
+                            android:id="@+id/LocalIPAddress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:textColor="@color/white"
+                            android:inputType="text"
                             android:text="192.168.1.100"/>
                     </TableRow>
                     <TableRow
@@ -159,7 +154,8 @@
                             android:id="@+id/SelectTerminalLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Available Terminals:" />
+                            android:text="Available Terminals:"
+                            android:textColor="@color/white"/>
                     </TableRow>
                     <TableRow
                         android:layout_width="match_parent"
@@ -174,6 +170,7 @@
                         android:layout_height="match_parent">
                         <Button
                             android:id="@+id/fetchterminal"
+                            android:backgroundTint= "@color/adyen_blue_alt"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -188,6 +185,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
+                            android:backgroundTint= "@color/adyen_blue_alt"
                             android:onClick="clickSetting"
                             android:text="Other Settings" />
                     </TableRow>
@@ -214,7 +212,8 @@
                     android:textAlignment="viewEnd"
                     android:textSize="30sp"
                     android:textStyle="bold"
-                    android:typeface="normal" />
+                    android:typeface="normal"
+                    android:textColor="@color/white"/>
             </TableRow>
             <TableRow
                 android:id="@+id/CheckoutItemPanel"
@@ -237,7 +236,8 @@
                     android:textAlignment="viewEnd"
                     android:textSize="30sp"
                     android:textStyle="bold"
-                    android:typeface="normal" />
+                    android:typeface="normal"
+                    android:textColor="@color/white"/>
                 <TextView
                     android:id="@+id/totalField"
                     android:layout_width="wrap_content"
@@ -246,20 +246,22 @@
                     android:textSize="30dp"
                     android:textStyle="bold"
                     android:typeface="normal"
-                    android:padding="5dp"/>
+                    android:padding="5dp"
+                    android:textColor="@color/white"
+                    />
             </TableRow>
             <TableRow
                 android:id="@+id/buttonPanel"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_weight=".1">
-
                 <Button
                     android:id="@+id/cloudPayment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:onClick="makePayment"
+                    android:backgroundTint="@color/adyen_green"
                     android:text="Pay" />
             </TableRow>
         </TableLayout>

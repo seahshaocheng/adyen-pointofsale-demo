@@ -21,6 +21,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        setTheme(R.style.Theme_AdyenPointOfSale);
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {

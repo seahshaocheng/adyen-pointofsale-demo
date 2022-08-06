@@ -25,4 +25,5 @@
     <string name="key_identifier">Key Identifier</string>
     <string name="pass_phrase">Pass Phrase</string>
     <string name="key_version">Key Version</string>
+    <string name="title_activity_demo_configration">DemoConfigrationActivity</string>
 </resources>
