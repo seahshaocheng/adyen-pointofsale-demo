@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
     private String local_key_version=null;
     private String local_key_identifier=null;
     private String local_key_phrase=null;
+    private ArrayList<CartItem> cart_lists;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
