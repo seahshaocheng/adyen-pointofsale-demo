@@ -5,59 +5,232 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DemoConfiguration">
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="20dp"
-        >
-        <TextView
-            android:id="@+id/IPAddressLabel1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Terminal Local IP Address:"
-            android:textColor="@color/white"/>
-
-        <EditText
-            android:id="@+id/LocalIPAddress1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="text"
-            android:text="192.168.1.100"
-            android:textColor="@color/white"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/SelectTerminalLabelDemo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Available Terminals:"
-            android:textColor="@color/white"/>
+        android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <Spinner
-                android:id="@+id/availableTerminalsDemo"
-                android:layout_width="350dp"
-                android:layout_height="50dp" />
-            <Button
-                android:id="@+id/fetchterminalDemo"
-                android:backgroundTint= "@color/adyen_blue_alt"
-                android:layout_width="20dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:text="Fetch Terminals" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            >
+            <TextView
+                android:id="@+id/DemoSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Point of Sale Configuration"
+                android:textColor="@color/adyen_green"
+                android:layout_marginTop="20dp"/>
+            <TextView
+                android:id="@+id/DemoSettingsHelp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="9dp"
+                android:text="Configure the point of sales"
+                android:textColor="@color/adyen_blue_alt"
+                android:layout_marginBottom="10dp"
+                />
+            <TextView
+                android:id="@+id/connectedTerminalLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Current Terminal:"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/connectedTerminalText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="N/A"
+                android:textColor="@color/white"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:id="@+id/SelectTerminalLabelDemo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Change Terminal:"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Spinner
+                    android:id="@+id/availableTerminalsDemo"
+                    android:layout_width="400dp"
+                    android:layout_height="50dp"
+                    android:layout_weight=".7"/>
+                <Button
+                    android:id="@+id/pairTerminal"
+                    android:layout_width="20dp"
+                    android:layout_height="50dp"
+                    android:layout_weight=".3"
+                    android:backgroundTint="@color/adyen_blue_alt"
+                    android:onClick="onClickFetchTerminal"
+                    android:text="Fetch Terminals" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/CredentialsSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Account Configuration"
+                android:textColor="@color/adyen_green"
+                android:layout_marginTop="20dp"/>
+            <TextView
+                android:id="@+id/CredentialsSettingsHelp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="9dp"
+                android:text="Account and API keys settings"
+                android:textColor="@color/adyen_blue_alt"
+                android:layout_marginBottom="10dp"
+                />
+            <TextView
+                android:id="@+id/merchantAccountLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/merchant_account"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/MerchantAccountValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="N/A"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/APIKeyLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/API_KEY"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/APIKeyValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="N/A"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/localsettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Local Integration Settings"
+                android:textColor="@color/adyen_green"
+                android:layout_marginTop="20dp"/>
+            <TextView
+                android:id="@+id/localsettingshelp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="9dp"
+                android:text="Settings required for local integration with terminal"
+                android:textColor="@color/adyen_blue_alt"
+                android:layout_marginBottom="10dp"
+                />
+
+            <TextView
+                android:id="@+id/IPAddressLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Terminal Local IP Address:"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/LocalIPAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:text="192.168.1.100"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/crytoverisonlabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/crypto_version"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+            />
+
+            <EditText
+                android:id="@+id/crytoverisonvalue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="N/A"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/keyidentifierlabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/key_identifier"
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
+
+            <EditText
+                android:id="@+id/keyidentifiervalue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="N/A"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/passphrase_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pass_phrase"
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
+
+            <EditText
+                android:id="@+id/passphrase_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="N/A"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/fetchterminalDemo"
+                    android:layout_width="20dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/adyen_green"
+                    android:onClick="onClickSaveConfiguration"
+                    android:text="Save Configuration" />
+            </LinearLayout>
         </LinearLayout>
-        <ListView
-            android:id="@+id/availableTerminalsList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+    </ScrollView>
 
-        </ListView>
-
-
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

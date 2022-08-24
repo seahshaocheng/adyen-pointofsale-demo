@@ -100,8 +100,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                .permitAll().build();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         //Printing current WIFI connection
@@ -122,14 +121,6 @@ public class MainActivity extends AppCompatActivity {
         this.refreshReferences();
 
         if(this.merchant_account!=null && this.api_key!=null && this.company_account!=null){
-            Log.i("merchant_account",this.merchant_account);
-            Toast.makeText(getApplicationContext(), "Fetching available terminals under "+this.merchant_account, Toast.LENGTH_LONG).show();
-            //Prepping available terminals dropdown list
-            Spinner availableTerminals = findViewById(R.id.availableTerminals);
-            List <String> terminals = this.getTerminals();
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, terminals);
-            //set the spinners adapter to the previously created one.
-            availableTerminals.setAdapter(adapter);
         }
         else{
             Toast.makeText(getApplicationContext(), "Please complete application set up", Toast.LENGTH_LONG).show();
@@ -149,55 +140,15 @@ public class MainActivity extends AppCompatActivity {
         this.local_key_version = prefs.getString("key_version",null);
     }
 
-    private List<String> getTerminals(){
-        List<String> inStoreTerminals = new ArrayList();
-
-        Config config = new Config();
-        config.setMerchantAccount(this.merchant_account);
-        config.setApiKey(this.api_key);
-        config.setEnvironment(Environment.TEST);
-        config.setPosTerminalManagementApiEndpoint("https://postfmapi-test.adyen.com/postfmapi/terminal");
-
-        Client APIClient = new Client(config);
-        PosTerminalManagement managementAPIClient = new PosTerminalManagement(APIClient);
-
-
-        GetTerminalsUnderAccountRequest request = new GetTerminalsUnderAccountRequest();
-        request.setCompanyAccount(this.company_account);
-        request.setMerchantAccount(this.merchant_account);
-
-        try{
-
-            GetTerminalsUnderAccountResponse response = managementAPIClient.getTerminalsUnderAccount(request);
-            List<MerchantAccount> merchantAccountsList = response.getMerchantAccounts();
-            List<Store> availableStores = new ArrayList<>();
-
-            for(int i = 0 ; i< merchantAccountsList.size(); i ++ ){
-                List<Store> store = merchantAccountsList.get(i).getStores();
-                availableStores.addAll(store);
-            }
-
-            Log.i("available store", Integer.toString(availableStores.size()) );
-            for (int j = 0 ; j < availableStores.size(); j ++){
-                List<String> availableInStoreTerminals = availableStores.get(j).getInStoreTerminals();
-                inStoreTerminals.addAll(availableInStoreTerminals);
-            }
-        }
-        catch (Exception e){
-            System.out.println("EXCEPTION!");
-            Toast.makeText(getApplicationContext(), "Something went wrong when getting list of terminals", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-        return inStoreTerminals;
-    }
-
     private SaleToPOIRequest generatePOIRequest() {
         Random rnd = new Random();
         int number = rnd.nextInt(999999);
 
         //Get POI ID
-        Spinner availableSpinner = (Spinner)findViewById(R.id.availableTerminals);
-        String selectedPOI = availableSpinner.getSelectedItem().toString();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        //Spinner availableSpinner = (Spinner)findViewById(R.id.availableTerminals);
+        //String selectedPOI = availableSpinner.getSelectedItem().toString();
+        String selectedPOI = prefs.getString("pairedTerminal",null);
 
         String saleID = "AndroidOne";
         String serviceID = "TEST"+Integer.toString(number);
@@ -372,28 +323,21 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void makePayment(View view) throws FileNotFoundException, CertificateException {
         Switch goLocal = (Switch) findViewById(R.id.GoLocal);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String localIP = prefs.getString("localIP",null);
         TextView localIPField = (TextView) findViewById(R.id.LocalIPAddress);
         Toast.makeText(getApplicationContext(), "Connecting to terminal", Toast.LENGTH_SHORT).show();
         if(goLocal.isChecked()){
             Log.i("Info","Going Local");
-            this.makeLocalPayment(localIPField.getText().toString());
+            this.makeLocalPayment(localIP);
         }
         else{
             this.makeCloudPayment();
         }
     }
 
-    public void fetchTerminalsClick(View view){
-        this.getTerminals();
-        Spinner availableTerminals = findViewById(R.id.availableTerminals);
-        List <String> terminals = this.getTerminals();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, terminals);
-        //set the spinners adapter to the previously created one.
-        availableTerminals.setAdapter(adapter);
-    }
-
     public void clickSetting(View view){
-        Intent i = new Intent(MainActivity.this, SettingsActivity.class);
+        Intent i = new Intent(MainActivity.this, DemoConfiguration.class);
         startActivity(i);
     }
 }

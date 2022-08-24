@@ -3,12 +3,15 @@ package com.example.adyenpointofsale;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.adyen.Client;
@@ -19,6 +22,8 @@ import com.adyen.model.posterminalmanagement.GetTerminalsUnderAccountResponse;
 import com.adyen.model.posterminalmanagement.MerchantAccount;
 import com.adyen.model.posterminalmanagement.Store;
 import com.adyen.service.PosTerminalManagement;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +42,13 @@ public class DemoConfiguration extends AppCompatActivity {
         this.merchant_account = prefs.getString("merchant_account",null);
         this.api_key = prefs.getString("api_key",null);
         setContentView(R.layout.activity_demo_configuration);
+
+        EditText localIPAddress = (EditText) findViewById(R.id.LocalIPAddress);
+        localIPAddress.setText(prefs.getString("localIP",null));
+
+        TextView currentTerminalText = (TextView) findViewById(R.id.connectedTerminalText);
+        currentTerminalText.setText(prefs.getString("pairedTerminal",null));
+
     }
 
     private List<String> getTerminals(){
@@ -57,7 +69,7 @@ public class DemoConfiguration extends AppCompatActivity {
         request.setMerchantAccount(this.merchant_account);
 
         try{
-
+            Toast.makeText(getApplicationContext(), "Fetching available terminals under "+this.merchant_account, Toast.LENGTH_SHORT).show();
             GetTerminalsUnderAccountResponse response = managementAPIClient.getTerminalsUnderAccount(request);
             List<MerchantAccount> merchantAccountsList = response.getMerchantAccounts();
             List<Store> availableStores = new ArrayList<>();
@@ -67,7 +79,6 @@ public class DemoConfiguration extends AppCompatActivity {
                 availableStores.addAll(store);
             }
 
-            Log.i("available store", Integer.toString(availableStores.size()) );
             for (int j = 0 ; j < availableStores.size(); j ++){
                 List<String> availableInStoreTerminals = availableStores.get(j).getInStoreTerminals();
                 inStoreTerminals.addAll(availableInStoreTerminals);
@@ -81,9 +92,32 @@ public class DemoConfiguration extends AppCompatActivity {
         return inStoreTerminals;
     }
 
-    public void fetchTerminalsClick(View view){
+    public void onClickSaveConfiguration(View view){
+        Toast.makeText(getApplicationContext(), "Saving preferences", Toast.LENGTH_SHORT).show();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = prefs.edit();
+
+        //Saving Local IP Address
+        EditText localIPField = (EditText) findViewById(R.id.LocalIPAddress);
+        editor.putString("localIP",localIPField.getText().toString());
+        editor.apply();
+
+        //Saving Paired Terminal
+        Spinner availableSpinner = (Spinner)findViewById(R.id.availableTerminalsDemo);
+        if(availableSpinner.getSelectedItem() != null){
+            String selectedPOI = availableSpinner.getSelectedItem().toString();
+            editor.putString("pairedTerminal",selectedPOI);
+            editor.apply();
+        }
+
+        Intent i = new Intent(DemoConfiguration.this, MainActivity.class);
+        startActivity(i);
+    }
+
+    public void onClickFetchTerminal(View view){
         this.getTerminals();
-        Spinner availableTerminals = findViewById(R.id.availableTerminals);
+        Spinner availableTerminals = findViewById(R.id.availableTerminalsDemo);
         List<String> terminals = this.getTerminals();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, terminals);
         //set the spinners adapter to the previously created one.
