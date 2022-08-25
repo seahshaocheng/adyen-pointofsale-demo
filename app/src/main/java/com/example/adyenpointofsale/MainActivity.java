@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(this.local_crypto_version==null || this.local_key_version==null || this.local_key_phrase==null || this.local_key_identifier==null){
             Toast.makeText(getApplicationContext(), "Please complete local integration set up", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(MainActivity.this, SettingsActivity.class);
+            Intent i = new Intent(MainActivity.this, DemoConfiguration.class);
             startActivity(i);
         }
 
