@@ -216,6 +216,24 @@
                 android:textColor="@color/white"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/key_version_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Key version"
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
+
+            <EditText
+                android:id="@+id/key_version_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="N/A"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

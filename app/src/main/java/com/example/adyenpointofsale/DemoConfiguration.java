@@ -33,6 +33,10 @@ public class DemoConfiguration extends AppCompatActivity {
     private String api_key=null;
     private String merchant_account=null;
     private String company_account = null;
+    private String local_crypto_version=null;
+    private String local_key_version=null;
+    private String local_key_identifier=null;
+    private String local_key_phrase=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +45,38 @@ public class DemoConfiguration extends AppCompatActivity {
         this.company_account = prefs.getString("company_account",null);
         this.merchant_account = prefs.getString("merchant_account",null);
         this.api_key = prefs.getString("api_key",null);
+        this.local_crypto_version = prefs.getString("crypto_version",null);
+        this.local_key_identifier = prefs.getString("key_identifier",null);
+        this.local_key_phrase = prefs.getString("key_phrase",null);
+        this.local_key_version = prefs.getString("key_version",null);
         setContentView(R.layout.activity_demo_configuration);
 
         EditText localIPAddress = (EditText) findViewById(R.id.LocalIPAddress);
         localIPAddress.setText(prefs.getString("localIP",null));
+
+        //Merchant Account
+        EditText merchantAccount = (EditText) findViewById(R.id.MerchantAccountValue);
+        merchantAccount.setText(this.merchant_account);
+
+        //API Key
+        EditText apiKey = (EditText) findViewById(R.id.APIKeyValue);
+        apiKey.setText(this.api_key);
+
+        //Saving Cryto Value
+        EditText crytoValue = (EditText) findViewById(R.id.crytoverisonvalue);
+        crytoValue.setText(this.local_crypto_version);
+
+        //Saving local key_identifier
+        EditText key_identifier = (EditText) findViewById(R.id.keyidentifiervalue);
+        key_identifier.setText(this.local_key_identifier);
+
+        //Saving local passphrase value
+        EditText passphrase = (EditText) findViewById(R.id.passphrase_value);
+        passphrase.setText(this.local_key_phrase);
+
+        //saving key version value
+        EditText key_version = (EditText) findViewById(R.id.key_version_value);
+        key_version.setText(this.local_key_version);
 
         TextView currentTerminalText = (TextView) findViewById(R.id.connectedTerminalText);
         currentTerminalText.setText(prefs.getString("pairedTerminal",null));
@@ -97,6 +129,36 @@ public class DemoConfiguration extends AppCompatActivity {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = prefs.edit();
+
+        //Saving Merchant Account
+        EditText merchantAccount = (EditText) findViewById(R.id.MerchantAccountValue);
+        editor.putString("merchant_account",merchantAccount.getText().toString());
+        editor.apply();
+
+        //Saving API Key
+        EditText apiKey = (EditText) findViewById(R.id.APIKeyValue);
+        editor.putString("api_key",apiKey.getText().toString());
+        editor.apply();
+
+        //Saving Cryto Value
+        EditText crytoValue = (EditText) findViewById(R.id.crytoverisonvalue);
+        editor.putString("crypto_version",crytoValue.getText().toString());
+        editor.apply();
+
+        //Saving local key_identifier
+        EditText key_identifier = (EditText) findViewById(R.id.keyidentifiervalue);
+        editor.putString("key_identifier",key_identifier.getText().toString());
+        editor.apply();
+
+        //Saving local passphrase value
+        EditText passphrase = (EditText) findViewById(R.id.passphrase_value);
+        editor.putString("key_phrase",passphrase.getText().toString());
+        editor.apply();
+
+        //saving key version value
+        EditText key_version = (EditText) findViewById(R.id.key_version_value);
+        editor.putString("key_version",key_version.getText().toString());
+        editor.apply();
 
         //Saving Local IP Address
         EditText localIPField = (EditText) findViewById(R.id.LocalIPAddress);

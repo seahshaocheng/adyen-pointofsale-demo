@@ -115,19 +115,6 @@
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
-                        <EditText
-                            android:id="@+id/WifiConnected"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:backgroundTint="#CCCCCC"
-                            android:textColor="#CCCCCC"
-                            android:ems="10"
-                            android:focusable="false"
-                            android:inputType="text" />
-                    </TableRow>
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
 
                         <Button
                             android:id="@+id/othersettings"

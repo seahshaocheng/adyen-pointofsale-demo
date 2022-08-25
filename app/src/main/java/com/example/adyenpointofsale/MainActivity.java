@@ -106,16 +106,6 @@ public class MainActivity extends AppCompatActivity {
         //Printing current WIFI connection
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        String ssid = null;
-        if(networkInfo.isConnected()){
-            final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            final WifiInfo connectionInfo = wifiManager.getConnectionInfo();
-            if (connectionInfo != null && !connectionInfo.getSSID().isEmpty()) {
-                ssid = connectionInfo.getSSID();
-                TextView SSIDLabel = (TextView) findViewById(R.id.WifiConnected);
-                SSIDLabel.setText(ssid);
-            }
-        }
 
         //Getting preference
         this.refreshReferences();
@@ -229,10 +219,10 @@ public class MainActivity extends AppCompatActivity {
         config.setTerminalApiLocalEndpoint("https://"+localIPAddress);
 
         SecurityKey securityKey = new SecurityKey();
-        securityKey.setAdyenCryptoVersion(1);
-        securityKey.setKeyIdentifier("AdyenMarkSeahLocal");
-        securityKey.setPassphrase("56d64382");
-        securityKey.setKeyVersion(1);
+        securityKey.setAdyenCryptoVersion(Integer.valueOf(this.local_crypto_version));
+        securityKey.setKeyIdentifier(this.local_key_identifier);
+        securityKey.setPassphrase(this.local_key_phrase);
+        securityKey.setKeyVersion(Integer.valueOf(this.local_key_version));
 
         Client terminalLocalAPIClient = new Client(config);
         terminalLocalAPIClient.setEnvironment(Environment.TEST,null);
