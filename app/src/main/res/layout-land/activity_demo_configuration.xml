@@ -7,8 +7,7 @@
     tools:context=".DemoConfiguration">
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -57,19 +56,26 @@
                 android:text="Change Terminal:"
                 android:textColor="@color/white"
                 android:textStyle="bold"/>
-            <Spinner
-                android:id="@+id/availableTerminalsDemo"
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1" />
-            <Button
-                android:id="@+id/pairTerminal"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:backgroundTint="@color/adyen_blue_alt"
-                android:onClick="onClickFetchTerminal"
-                android:text="Fetch Terminals" />
+                android:layout_height="wrap_content">
+
+                <Spinner
+                    android:id="@+id/availableTerminalsDemo"
+                    android:layout_width="400dp"
+                    android:layout_height="50dp"
+                    android:layout_weight=".7" />
+
+                <Button
+                    android:id="@+id/pairTerminal"
+                    android:layout_width="20dp"
+                    android:layout_height="50dp"
+                    android:layout_weight=".3"
+                    android:backgroundTint="@color/adyen_blue_alt"
+                    android:onClick="onClickFetchTerminal"
+                    android:text="Fetch Terminals" />
+            </LinearLayout>
             <TextView
                 android:id="@+id/CredentialsSettings"
                 android:layout_width="match_parent"
@@ -228,15 +234,20 @@
                 android:text="N/A"
                 android:textColor="@color/white"
                 app:layout_constraintTop_toTopOf="parent" />
-            <Button
-                android:id="@+id/fetchterminalDemo"
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:backgroundTint="@color/adyen_green"
-                android:onClick="onClickSaveConfiguration"
-                android:layout_marginBottom="50dp"
-                android:text="Save Configuration" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/fetchterminalDemo"
+                    android:layout_width="20dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/adyen_green"
+                    android:onClick="onClickSaveConfiguration"
+                    android:text="Save Configuration" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

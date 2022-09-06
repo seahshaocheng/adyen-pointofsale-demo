@@ -3,12 +3,20 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.3455" />
+        <entry key="app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.3455" />
+        <entry key="app/src/main/res/layout-land/activity_demo_configuration.xml" value="0.35885416666666664" />
+        <entry key="app/src/main/res/layout-land/activity_main.xml" value="0.20208333333333334" />
         <entry key="app/src/main/res/layout/activity_demo_configuration.xml" value="0.4287118977384464" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.4514983665256292" />
         <entry key="app/src/main/res/layout/content_demo_configration.xml" value="0.359375" />
         <entry key="app/src/main/res/layout/fragment_first.xml" value="0.359375" />
         <entry key="app/src/main/res/layout/fragment_second.xml" value="0.359375" />
+        <entry key="app/src/main/res/layout/menu.xml" value="0.33061594202898553" />
         <entry key="app/src/main/res/layout/settings_activity.xml" value="0.41322815533980584" />
+        <entry key="app/src/main/res/layout/switch_item.xml" value="0.29257246376811596" />
+        <entry key="app/src/main/res/menu/menu.xml" value="0.5192708333333333" />
+        <entry key="app/src/main/res/menu/settingsmenu.xml" value="0.5112820512820513" />
         <entry key="app/src/main/res/xml/preference.xml" value="0.41322815533980584" />
         <entry key="app/src/main/res/xml/root_preferences.xml" value="0.5571808510638298" />
       </map>

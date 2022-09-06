@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/adyen_blue"
+    android:orientation="horizontal"
+    tools:context=".MainActivity">
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnCount="2">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:layout_columnWeight=".70">
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:columnCount="2"
+                android:rowCount="4">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1">
+
+                    <Button
+                        android:id="@+id/plus4"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_row="0"
+                        android:layout_column="0"
+                        android:layout_margin="3dp"
+                        android:backgroundTint="#EEEEEE"
+                        android:onClick="AddToCart"
+                        android:tag="4"
+                        android:text="Four Dollar Item"
+                        android:textColor="#000000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1">
+
+                    <Button
+                        android:id="@+id/plus5"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_row="0"
+                        android:layout_column="1"
+                        android:layout_margin="3dp"
+                        android:backgroundTint="#EEEEEE"
+                        android:onClick="AddToCart"
+                        android:text="Six Dollar Item"
+                        android:textColor="#000000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1">
+
+                    <Button
+                        android:id="@+id/plus1"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_row="1"
+                        android:layout_column="0"
+                        android:layout_margin="3dp"
+                        android:backgroundTint="#EEEEEE"
+                        android:onClick="AddToCart"
+                        android:text="One Dollar Item"
+                        android:textColor="#000000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1">
+
+                    <Button
+                        android:id="@+id/plus2"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_row="1"
+                        android:layout_column="1"
+                        android:layout_margin="3dp"
+                        android:backgroundTint="#EEEEEE"
+                        android:onClick="AddToCart"
+                        android:text="Two Dollar Item"
+                        android:textColor="#000000" />
+                </LinearLayout>
+            </GridLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_column="1"
+            android:layout_row="0"
+            android:layout_columnWeight=".2"
+            >
+            <TableLayout
+                android:layout_width="0dp"
+                android:layout_weight=".3"
+                android:layout_height="match_parent"
+                android:paddingRight="20dp">
+                <TableRow
+                    android:layout_height="0dp"
+                    android:layout_weight="0"
+                    android:layout_width="match_parent">
+                    <TextView
+                        android:id="@+id/orderHeader"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:paddingEnd="0dp"
+                        android:text="Order"
+                        android:textAlignment="viewEnd"
+                        android:textSize="30sp"
+                        android:textStyle="bold"
+                        android:typeface="normal"
+                        android:textColor="@color/white"/>
+                </TableRow>
+                <TableRow
+                    android:id="@+id/CheckoutItemPanel"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent">
+                </TableRow>
+                <TableRow
+                    android:id="@+id/TotalPanel"
+                    android:layout_height="0dp"
+                    android:layout_weight=".02"
+                    android:layout_width="match_parent">
+                    <TextView
+                        android:id="@+id/totalLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:paddingEnd="0dp"
+                        android:text="Total:"
+                        android:textAlignment="viewEnd"
+                        android:textSize="30sp"
+                        android:textStyle="bold"
+                        android:typeface="normal"
+                        android:textColor="@color/white"/>
+                    <TextView
+                        android:id="@+id/totalField"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="30dp"
+                        android:textStyle="bold"
+                        android:typeface="normal"
+                        android:padding="5dp"
+                        android:textColor="@color/white"
+                        />
+                </TableRow>
+                <TableRow
+                    android:id="@+id/buttonPanel"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_weight=".1">
+                    <Button
+                        android:id="@+id/cloudPayment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:onClick="makePayment"
+                        android:backgroundTint="@color/adyen_green"
+                        android:text="Pay" />
+                </TableRow>
+            </TableLayout>
+        </LinearLayout>
+
+    </GridLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

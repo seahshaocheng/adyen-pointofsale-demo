@@ -6,162 +6,99 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/adyen_blue"
+    android:orientation="vertical"
     tools:context=".MainActivity">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
         >
-        <TableLayout
+        <GridLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight=".6"
-            android:layout_width="0dp"
-            android:paddingLeft="20dp">
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <TextView
-                    android:id="@+id/DemoItemsHeader"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Demo Items:"
-                    android:textSize="20dp"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"/>
-            </TableRow>
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <Button
-                    android:id="@+id/plus1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="3dp"
-                    android:backgroundTint="#EEEEEE"
-                    android:text="One Dollar Item"
-                    android:textColor="#000000"
-                    android:onClick="AddToCart"/>
-                <Button
-                    android:id="@+id/plus2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="3dp"
-                    android:backgroundTint="#EEEEEE"
-                    android:text="Two Dollar Item"
-                    android:textColor="#000000"
-                    android:onClick="AddToCart"/>
-            </TableRow>
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
+            android:layout_weight="0.9"
+            android:rowCount="4"
+            android:columnCount="2">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                >
                 <Button
                     android:id="@+id/plus4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
                     android:layout_margin="3dp"
                     android:backgroundTint="#EEEEEE"
                     android:onClick="AddToCart"
                     android:tag="4"
-                    android:text="Five Dollar Item"
-                    android:textColor="#000000" />
+                    android:text="Four Dollar Item"
+                    android:textColor="#000000"
+                    android:layout_column="0"
+                    android:layout_row="0"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                >
                 <Button
                     android:id="@+id/plus5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
                     android:layout_margin="3dp"
                     android:backgroundTint="#EEEEEE"
                     android:text="Six Dollar Item"
                     android:textColor="#000000"
-                    android:onClick="AddToCart"/>
-            </TableRow>
-            <TableRow
+                    android:onClick="AddToCart"
+                    android:layout_column="1"
+                    android:layout_row="0"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                >
+                <Button
+                    android:id="@+id/plus1"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_margin="3dp"
+                    android:backgroundTint="#EEEEEE"
+                    android:text="One Dollar Item"
+                    android:textColor="#000000"
+                    android:onClick="AddToCart"
+                    android:layout_column="0"
+                    android:layout_row="1"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                >
+                <Button
+                    android:id="@+id/plus2"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_margin="3dp"
+                    android:backgroundTint="#EEEEEE"
+                    android:text="Two Dollar Item"
+                    android:textColor="#000000"
+                    android:onClick="AddToCart"
+                    android:layout_column="1"
+                    android:layout_row="1"/>
+            </LinearLayout>
+        </GridLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight=".8">
-            </TableRow>
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight=".2">
-                <TableLayout
-                    android:layout_width="match_parent">
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-                        <TextView
-                            android:id="@+id/ConfigurationHEader"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Demo Configurations:"
-                            android:textSize="20dp"
-                            android:textStyle="bold"
-                            android:textColor="@color/white"/>
-                    </TableRow>
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-                        <Switch
-                            android:id="@+id/GoLocal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Go For Local Integration"
-                            android:textAlignment="textEnd"
-                            android:textAllCaps="true"
-                            android:textColor="@color/white"/>
-                    </TableRow>
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <Button
-                            android:id="@+id/othersettings"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:backgroundTint="@color/adyen_blue_alt"
-                            android:onClick="clickSetting"
-                            android:text="Other Settings" />
-                    </TableRow>
-                </TableLayout>
-
-            </TableRow>
-        </TableLayout>
-        <TableLayout
-            android:layout_width="0dp"
-            android:layout_weight=".3"
-            android:layout_height="match_parent"
-            android:paddingRight="20dp">
-            <TableRow
-                android:layout_height="0dp"
-                android:layout_weight="0"
-                android:layout_width="match_parent">
-                <TextView
-                    android:id="@+id/orderHeader"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:paddingEnd="0dp"
-                    android:text="Order"
-                    android:textAlignment="viewEnd"
-                    android:textSize="30sp"
-                    android:textStyle="bold"
-                    android:typeface="normal"
-                    android:textColor="@color/white"/>
-            </TableRow>
-            <TableRow
-                android:id="@+id/CheckoutItemPanel"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_width="match_parent">
-            </TableRow>
-            <TableRow
-                android:id="@+id/TotalPanel"
-                android:layout_height="0dp"
-                android:layout_weight=".02"
-                android:layout_width="match_parent">
+                android:layout_height="wrap_content">
                 <TextView
                     android:id="@+id/totalLabel"
                     android:layout_width="wrap_content"
@@ -185,22 +122,18 @@
                     android:padding="5dp"
                     android:textColor="@color/white"
                     />
-            </TableRow>
-            <TableRow
-                android:id="@+id/buttonPanel"
-                android:layout_height="wrap_content"
+            </LinearLayout>
+            <Button
+                android:id="@+id/cloudPayment"
                 android:layout_width="match_parent"
-                android:layout_weight=".1">
-                <Button
-                    android:id="@+id/cloudPayment"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:onClick="makePayment"
-                    android:backgroundTint="@color/adyen_green"
-                    android:text="Pay" />
-            </TableRow>
-        </TableLayout>
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:onClick="makePayment"
+                android:backgroundTint="@color/adyen_green"
+                android:layout_marginBottom="20dp"
+                android:text="Pay" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,6 +22,8 @@ import android.os.StrictMode;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -99,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setTitle("Demo Home");
         setContentView(R.layout.activity_main);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -114,9 +117,32 @@ public class MainActivity extends AppCompatActivity {
         }
         else{
             Toast.makeText(getApplicationContext(), "Please complete application set up", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(MainActivity.this, SettingsActivity.class);
+            Intent i = new Intent(MainActivity.this, DemoConfiguration.class);
             startActivity(i);
         }
+    }
+
+    // create an action bar button
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // R.menu.mymenu is a reference to an xml file named mymenu.xml which should be inside your res/menu directory.
+        // If you don't have res/menu, just create a directory named "menu" inside res
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    // handle button activities
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.settings) {
+            // do something here
+            Intent i = new Intent(MainActivity.this, DemoConfiguration.class);
+            startActivity(i);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void refreshReferences(){
@@ -312,12 +338,12 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void makePayment(View view) throws FileNotFoundException, CertificateException {
-        Switch goLocal = (Switch) findViewById(R.id.GoLocal);
+        Switch goLocal = (Switch) findViewById(R.id.goLocal);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String localIP = prefs.getString("localIP",null);
         TextView localIPField = (TextView) findViewById(R.id.LocalIPAddress);
         Toast.makeText(getApplicationContext(), "Connecting to terminal", Toast.LENGTH_SHORT).show();
-        if(goLocal.isChecked()){
+       if(goLocal.isChecked()){
             Log.i("Info","Going Local");
             this.makeLocalPayment(localIP);
         }
