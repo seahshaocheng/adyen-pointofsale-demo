@@ -57,6 +57,10 @@ public class DemoConfiguration extends AppCompatActivity {
         EditText localIPAddress = (EditText) findViewById(R.id.LocalIPAddress);
         localIPAddress.setText(prefs.getString("localIP",null));
 
+        //Compnay Account
+        EditText companyAccount = (EditText) findViewById(R.id.companyAccountValue);
+        companyAccount.setText(this.company_account);
+
         //Merchant Account
         EditText merchantAccount = (EditText) findViewById(R.id.MerchantAccountValue);
         merchantAccount.setText(this.merchant_account);
@@ -154,6 +158,11 @@ public class DemoConfiguration extends AppCompatActivity {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = prefs.edit();
+
+        //Saving Company Account
+        EditText companyAccount = (EditText) findViewById(R.id.companyAccountValue);
+        editor.putString("company_account", companyAccount.getText().toString());
+        editor.apply();
 
         //Saving Merchant Account
         EditText merchantAccount = (EditText) findViewById(R.id.MerchantAccountValue);
