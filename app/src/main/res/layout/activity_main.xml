@@ -124,7 +124,7 @@
                     />
             </LinearLayout>
             <Button
-                android:id="@+id/cloudPayment"
+                android:id="@+id/paymentButton"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

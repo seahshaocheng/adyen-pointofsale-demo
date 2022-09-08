@@ -1,3 +1,4 @@
+
 package com.example.adyenpointofsale;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +34,9 @@ import java.util.List;
 public class DemoConfiguration extends AppCompatActivity {
 
     private String api_key=null;
+    private String POS_ID = null;
+    private String currency = null;
+    private String reference_prefix = null;
     private String merchant_account=null;
     private String company_account = null;
     private String local_crypto_version=null;
@@ -45,6 +49,9 @@ public class DemoConfiguration extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setTitle("Settings");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        this.POS_ID = prefs.getString("pos_id",null);
+        this.currency = prefs.getString("tender_currency",null);
+        this.reference_prefix = prefs.getString("reference_prefix",null);
         this.company_account = prefs.getString("company_account",null);
         this.merchant_account = prefs.getString("merchant_account",null);
         this.api_key = prefs.getString("api_key",null);
@@ -56,6 +63,22 @@ public class DemoConfiguration extends AppCompatActivity {
 
         EditText localIPAddress = (EditText) findViewById(R.id.LocalIPAddress);
         localIPAddress.setText(prefs.getString("localIP",null));
+
+        //POS ID
+        EditText posID = (EditText) findViewById(R.id.POSIdValue);
+        posID.setText(this.POS_ID);
+
+        //currency
+        EditText currencyField = (EditText) findViewById(R.id.currencyValue);
+        currencyField.setText(this.currency);
+
+        //reference prefix
+        EditText referencePrefix = (EditText) findViewById(R.id.referencePrefixValue);
+        referencePrefix.setText(this.reference_prefix);
+
+        //Company Account
+        EditText companyAccount = (EditText) findViewById(R.id.companyAccountValue);
+        companyAccount.setText(this.company_account);
 
         //Merchant Account
         EditText merchantAccount = (EditText) findViewById(R.id.MerchantAccountValue);
@@ -154,6 +177,26 @@ public class DemoConfiguration extends AppCompatActivity {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = prefs.edit();
+
+        //Saving POS ID
+        EditText pos_id = (EditText) findViewById(R.id.POSIdValue);
+        editor.putString("pos_id",pos_id.getText().toString());
+        editor.apply();
+
+        //Saving Currency
+        EditText tender_currency = (EditText) findViewById(R.id.currencyValue);
+        editor.putString("tender_currency",tender_currency.getText().toString());
+        editor.apply();
+
+        //Saving reference prefix
+        EditText reference = (EditText) findViewById(R.id.referencePrefixValue);
+        editor.putString("reference_prefix",reference.getText().toString());
+        editor.apply();
+
+        //Saving Company Account
+        EditText companyAccount = (EditText) findViewById(R.id.companyAccountValue);
+        editor.putString("company_account",companyAccount.getText().toString());
+        editor.apply();
 
         //Saving Merchant Account
         EditText merchantAccount = (EditText) findViewById(R.id.MerchantAccountValue);

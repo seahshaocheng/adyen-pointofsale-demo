@@ -1,5 +1,6 @@
 package com.example.adyenpointofsale;
 
+import static java.lang.System.currentTimeMillis;
 import static java.security.AccessController.getContext;
 
 import androidx.annotation.RequiresApi;
@@ -26,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TableLayout;
@@ -73,6 +75,8 @@ import org.w3c.dom.Text;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
+import java.security.Timestamp;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.text.BreakIterator;
@@ -158,18 +162,21 @@ public class MainActivity extends AppCompatActivity {
 
     private SaleToPOIRequest generatePOIRequest() {
         Random rnd = new Random();
-        int number = rnd.nextInt(999999);
+        int number = rnd.nextInt(9999);
 
         //Get POI ID
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         //Spinner availableSpinner = (Spinner)findViewById(R.id.availableTerminals);
         //String selectedPOI = availableSpinner.getSelectedItem().toString();
         String selectedPOI = prefs.getString("pairedTerminal",null);
+        String POSID = prefs.getString("pos_id",null);
+        String reference_prefix = prefs.getString("reference_prefix",null);
+        Long tsLong = System.currentTimeMillis()/1000;
 
-        String saleID = "AndroidOne";
-        String serviceID = "TEST"+Integer.toString(number);
+        String saleID = POSID;
+        String serviceID = tsLong.toString();
         String POIID = selectedPOI;
-        String transactionID = "AndroidOne"+Integer.toString(number);
+        String transactionID = reference_prefix+"_"+Integer.toString(number);
 
         SaleToPOIRequest saleToPOIRequest = new SaleToPOIRequest();
         MessageHeader messageHeader = new MessageHeader();
@@ -196,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
 
         PaymentTransaction paymentTransaction = new PaymentTransaction();
         AmountsReq amountsReq = new AmountsReq();
-        amountsReq.setCurrency("SGD");
+        amountsReq.setCurrency("MYR");
         amountsReq.setRequestedAmount( BigDecimal.valueOf(orderTotal) );
         paymentTransaction.setAmountsReq(amountsReq);
         paymentRequest.setPaymentTransaction(paymentTransaction);
@@ -230,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void makeLocalPayment(String localIPAddress) throws FileNotFoundException, CertificateException {
+        Button paymentButton = (Button) findViewById(R.id.paymentButton);
         this.refreshReferences();
 
         if(this.local_crypto_version==null || this.local_key_version==null || this.local_key_phrase==null || this.local_key_identifier==null){
@@ -272,16 +280,19 @@ public class MainActivity extends AppCompatActivity {
 
                 if(resultCode.equalsIgnoreCase("success")){
                     Toast.makeText(getApplicationContext(), "Payment is successful", Toast.LENGTH_SHORT).show();
+                    paymentButton.setEnabled(true);
                 }
                 else{
                     JSONObject additionalData = new JSONObject(new String(decoded));
                     String message = additionalData.getString("message");
                     String refusalReason = additionalData.getString("refusalReason");
                     Toast.makeText(getApplicationContext(), "Payment failed: "+ message +"::"+refusalReason, Toast.LENGTH_LONG).show();
+                    paymentButton.setEnabled(true);
                 }
             }
             else{
                 Toast.makeText(getApplicationContext(), "Unable to establish connection with terminal locally", Toast.LENGTH_LONG).show();
+                paymentButton.setEnabled(true);
             }
         } catch (Exception e) {
             System.out.println("EXCEPTION!");
@@ -292,6 +303,7 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void makeCloudPayment() {
+        Button paymentButton = (Button) findViewById(R.id.paymentButton);
         Log.e("Info","Initiating Cloud Payment");
 
         Config config = new Config();
@@ -326,8 +338,13 @@ public class MainActivity extends AppCompatActivity {
                     String refusalReason = additionalData.getString("refusalReason");
                     Toast.makeText(getApplicationContext(), "Payment failed: "+ message +"::"+refusalReason, Toast.LENGTH_LONG).show();
                 }
+                paymentButton.setEnabled(true);
             }else{
+                if(terminalAPIResponse.getSaleToPOIRequest().getEventNotification()!= null){
+                    Toast.makeText(getApplicationContext(), terminalAPIResponse.getSaleToPOIRequest().getEventNotification().getEventDetails(), Toast.LENGTH_SHORT).show();
+                }
                 Toast.makeText(getApplicationContext(), "Unable to establish connection with terminal via cloud", Toast.LENGTH_LONG).show();
+                paymentButton.setEnabled(true);
             }
         } catch (Exception e) {
             System.out.println("EXCEPTION!");
@@ -338,7 +355,10 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void makePayment(View view) throws FileNotFoundException, CertificateException {
+        Button paymentButton = (Button) findViewById(R.id.paymentButton);
+        paymentButton.setEnabled(false);
         Switch goLocal = (Switch) findViewById(R.id.goLocal);
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String localIP = prefs.getString("localIP",null);
         TextView localIPField = (TextView) findViewById(R.id.LocalIPAddress);
