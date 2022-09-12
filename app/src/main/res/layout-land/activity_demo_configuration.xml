@@ -76,6 +76,78 @@
                     android:onClick="onClickFetchTerminal"
                     android:text="Fetch Terminals" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/POSSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="POS Configuration"
+                android:textColor="@color/adyen_green"
+                android:layout_marginTop="20dp"/>
+            <TextView
+                android:id="@+id/POSSettingsHelp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="9dp"
+                android:text="Currency and reference settings"
+                android:textColor="@color/adyen_blue_alt"
+                android:layout_marginBottom="10dp"
+                />
+
+            <TextView
+                android:id="@+id/POSIdLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="POS ID"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/POSIdValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="N/A"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/currencyLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tender Currency"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/currencyValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="N/A"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/referencePrefixLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Transaction Reference Prefix"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/referencePrefixValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="N/A"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/CredentialsSettings"
                 android:layout_width="match_parent"
@@ -92,6 +164,24 @@
                 android:textColor="@color/adyen_blue_alt"
                 android:layout_marginBottom="10dp"
                 />
+            <TextView
+                android:id="@+id/companyAccountLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/company_account"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/companyAccountValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="N/A"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/merchantAccountLabel"
                 android:layout_width="match_parent"
