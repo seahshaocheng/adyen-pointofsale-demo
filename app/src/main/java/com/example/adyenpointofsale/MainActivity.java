@@ -172,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
         String POSID = prefs.getString("pos_id",null);
         String reference_prefix = prefs.getString("reference_prefix",null);
         Long tsLong = System.currentTimeMillis()/1000;
+        String currency = prefs.getString("tender_currency",null);
 
         String saleID = POSID;
         String serviceID = tsLong.toString();
@@ -203,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
 
         PaymentTransaction paymentTransaction = new PaymentTransaction();
         AmountsReq amountsReq = new AmountsReq();
-        amountsReq.setCurrency("MYR");
+        amountsReq.setCurrency(currency);
         amountsReq.setRequestedAmount( BigDecimal.valueOf(orderTotal) );
         paymentTransaction.setAmountsReq(amountsReq);
         paymentRequest.setPaymentTransaction(paymentTransaction);
@@ -296,8 +297,9 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             System.out.println("EXCEPTION!");
-            Toast.makeText(getApplicationContext(), "Something went wrong when connecting to terminal", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
+            paymentButton.setEnabled(true);
         }
     }
 
@@ -348,8 +350,9 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             System.out.println("EXCEPTION!");
-            Toast.makeText(getApplicationContext(), "Something went wrong when connecting to terminal", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
+            paymentButton.setEnabled(true);
         }
     }
 

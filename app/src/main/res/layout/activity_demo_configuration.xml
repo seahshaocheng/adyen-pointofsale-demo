@@ -179,23 +179,6 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/companyAccountLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/company_account"
-                android:textColor="@color/white"
-                android:textStyle="bold"/>
-
-            <EditText
-                android:id="@+id/companyAccountValue"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="text"
-                android:text="N/A"
-                android:textColor="@color/white"
-                app:layout_constraintTop_toTopOf="parent" />
-            <TextView
                 android:id="@+id/merchantAccountLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
