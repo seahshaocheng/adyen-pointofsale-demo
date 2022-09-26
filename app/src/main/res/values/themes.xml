@@ -25,4 +25,8 @@
     </style>
     <style name="Theme.AdyenPointOfSale.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.AdyenPointOfSale.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.AdyenPointOfSale.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>

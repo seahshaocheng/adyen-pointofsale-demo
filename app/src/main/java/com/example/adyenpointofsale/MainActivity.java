@@ -1,36 +1,27 @@
 package com.example.adyenpointofsale;
 
-import static java.lang.System.currentTimeMillis;
-import static java.security.AccessController.getContext;
-
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
-import android.app.Activity;
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
-import android.net.Network;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,45 +38,20 @@ import com.adyen.model.nexo.PaymentTransaction;
 import com.adyen.model.nexo.SaleData;
 import com.adyen.model.nexo.SaleToPOIRequest;
 import com.adyen.model.nexo.TransactionIdentification;
-import com.adyen.model.posterminalmanagement.GetStoresUnderAccountResponse;
-import com.adyen.model.posterminalmanagement.GetTerminalsUnderAccountRequest;
-import com.adyen.model.posterminalmanagement.GetTerminalsUnderAccountResponse;
-import com.adyen.model.posterminalmanagement.MerchantAccount;
-import com.adyen.model.posterminalmanagement.Store;
 import com.adyen.model.terminal.TerminalAPIRequest;
 import com.adyen.model.terminal.TerminalAPIResponse;
 import com.adyen.model.terminal.security.SecurityKey;
-import com.adyen.service.PosTerminalManagement;
 import com.adyen.service.TerminalCloudAPI;
 import com.adyen.service.TerminalLocalAPI;
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
-import org.apache.commons.codec.binary.StringUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.URLDecoder;
-import java.security.Timestamp;
-import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -101,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private String local_key_identifier=null;
     private String local_key_phrase=null;
     private ArrayList<CartItem> cart_lists;
+    private String[] cameraPermission;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -373,6 +340,11 @@ public class MainActivity extends AppCompatActivity {
         else{
             this.makeCloudPayment();
         }
+    }
+
+    public void scanProduct(View view){
+        Intent i = new Intent(MainActivity.this, ScannedBarcodeActivity.class);
+        startActivity(i);
     }
 
     public void clickSetting(View view){
