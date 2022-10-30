@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
     private String local_key_version=null;
     private String local_key_identifier=null;
     private String local_key_phrase=null;
-    private ArrayList<CartItem> cart_lists;
     private String[] cameraPermission;
 
     @Override
@@ -204,92 +203,49 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void makeLocalPayment(String localIPAddress) throws FileNotFoundException, CertificateException {
+    public void makePayment(View view) throws FileNotFoundException, CertificateException {
         Button paymentButton = (Button) findViewById(R.id.paymentButton);
-        this.refreshReferences();
+        paymentButton.setEnabled(false);
+        Switch goLocal = (Switch) findViewById(R.id.goLocal);
 
-        if(this.local_crypto_version==null || this.local_key_version==null || this.local_key_phrase==null || this.local_key_identifier==null){
-            Toast.makeText(getApplicationContext(), "Please complete local integration set up", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(MainActivity.this, DemoConfiguration.class);
-            startActivity(i);
-        }
-
-        Log.e("Info","Initiating Local Payment");
-        Config config = new Config();
-        config.setMerchantAccount(this.merchant_account);
-        config.setTerminalCertificate(getResources().openRawResource(R.raw.adyen_terminalfleet_test));
-        config.setTerminalApiLocalEndpoint("https://"+localIPAddress);
-
-        SecurityKey securityKey = new SecurityKey();
-        securityKey.setAdyenCryptoVersion(Integer.valueOf(this.local_crypto_version));
-        securityKey.setKeyIdentifier(this.local_key_identifier);
-        securityKey.setPassphrase(this.local_key_phrase);
-        securityKey.setKeyVersion(Integer.valueOf(this.local_key_version));
-
-        Client terminalLocalAPIClient = new Client(config);
-        terminalLocalAPIClient.setEnvironment(Environment.TEST,null);
-        TerminalLocalAPI terminalLocalAPI = new TerminalLocalAPI(terminalLocalAPIClient);
-        SaleToPOIRequest saleToPOIRequest =  generatePOIRequest();
-
-        TerminalAPIRequest terminalApiRequest = new TerminalAPIRequest();
-        terminalApiRequest.setSaleToPOIRequest(saleToPOIRequest);
-        try {
-            Toast.makeText(getApplicationContext(), "Connected to terminal locally, make payment", Toast.LENGTH_SHORT).show();
-            TerminalAPIResponse terminalAPIResponse = terminalLocalAPI.request(terminalApiRequest, securityKey);
-
-            if(terminalAPIResponse.getSaleToPOIResponse()!=null){
-
-                Log.i("Info","The result"+terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getResult());
-                Log.i("Info","The result"+terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getAdditionalResponse());
-                Log.i("Info:","Completed Local Connection!");
-
-                byte[] decoded = Base64.getDecoder().decode(terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getAdditionalResponse());
-                String resultCode = terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getResult().toString();
-
-                if(resultCode.equalsIgnoreCase("success")){
-                    Toast.makeText(getApplicationContext(), "Payment is successful", Toast.LENGTH_SHORT).show();
-                    paymentButton.setEnabled(true);
-                }
-                else{
-                    JSONObject additionalData = new JSONObject(new String(decoded));
-                    String message = additionalData.getString("message");
-                    String refusalReason = additionalData.getString("refusalReason");
-                    Toast.makeText(getApplicationContext(), "Payment failed: "+ message +"::"+refusalReason, Toast.LENGTH_LONG).show();
-                    paymentButton.setEnabled(true);
-                }
-            }
-            else{
-                Toast.makeText(getApplicationContext(), "Unable to establish connection with terminal locally", Toast.LENGTH_LONG).show();
-                paymentButton.setEnabled(true);
-            }
-        } catch (Exception e) {
-            System.out.println("EXCEPTION!");
-            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-            paymentButton.setEnabled(true);
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void makeCloudPayment() {
-        Button paymentButton = (Button) findViewById(R.id.paymentButton);
-        Log.e("Info","Initiating Cloud Payment");
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String localIP = prefs.getString("localIP",null);
+        TextView localIPField = (TextView) findViewById(R.id.LocalIPAddress);
+        Toast.makeText(getApplicationContext(), "Connecting to terminal", Toast.LENGTH_SHORT).show();
 
         Config config = new Config();
         config.setMerchantAccount(this.merchant_account);
         config.setApiKey(this.api_key);
 
-        Client terminalCloudAPIClient = new Client(config);
-        terminalCloudAPIClient.setEnvironment(Environment.TEST,null);
-        TerminalCloudAPI terminalCloudAPI = new TerminalCloudAPI(terminalCloudAPIClient);
-
+        TerminalAPIResponse terminalAPIResponse = null;
         SaleToPOIRequest saleToPOIRequest =  generatePOIRequest();
         TerminalAPIRequest terminalApiRequest = new TerminalAPIRequest();
         terminalApiRequest.setSaleToPOIRequest(saleToPOIRequest);
 
         try {
+            if(goLocal.isChecked()){
+                config.setTerminalCertificate(getResources().openRawResource(R.raw.adyen_terminalfleet_test));
+                config.setTerminalApiLocalEndpoint("https://"+localIP);
 
-            TerminalAPIResponse terminalAPIResponse = terminalCloudAPI.sync(terminalApiRequest);
+                SecurityKey securityKey = new SecurityKey();
+                securityKey.setAdyenCryptoVersion(Integer.valueOf(this.local_crypto_version));
+                securityKey.setKeyIdentifier(this.local_key_identifier);
+                securityKey.setPassphrase(this.local_key_phrase);
+                securityKey.setKeyVersion(Integer.valueOf(this.local_key_version));
+                Log.i("Info","Going Local");
+                Client terminalLocalAPIClient = new Client(config);
+                terminalLocalAPIClient.setEnvironment(Environment.TEST,null);
+
+                TerminalLocalAPI terminalLocalAPI = new TerminalLocalAPI(terminalLocalAPIClient);
+                terminalAPIResponse = terminalLocalAPI.request(terminalApiRequest, securityKey);
+            }
+            else{
+                Client terminalCloudAPIClient = new Client(config);
+                terminalCloudAPIClient.setEnvironment(Environment.TEST,null);
+                TerminalCloudAPI terminalCloudAPI = new TerminalCloudAPI(terminalCloudAPIClient);
+                terminalAPIResponse = terminalCloudAPI.sync(terminalApiRequest);
+            }
+
             if(terminalAPIResponse.getSaleToPOIResponse()!= null){
                 byte[] decoded = Base64.getDecoder().decode(terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getAdditionalResponse());
                 String resultCode = terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getResult().toString();
@@ -321,29 +277,12 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             paymentButton.setEnabled(true);
         }
-    }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void makePayment(View view) throws FileNotFoundException, CertificateException {
-        Button paymentButton = (Button) findViewById(R.id.paymentButton);
-        paymentButton.setEnabled(false);
-        Switch goLocal = (Switch) findViewById(R.id.goLocal);
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String localIP = prefs.getString("localIP",null);
-        TextView localIPField = (TextView) findViewById(R.id.LocalIPAddress);
-        Toast.makeText(getApplicationContext(), "Connecting to terminal", Toast.LENGTH_SHORT).show();
-       if(goLocal.isChecked()){
-            Log.i("Info","Going Local");
-            this.makeLocalPayment(localIP);
-        }
-        else{
-            this.makeCloudPayment();
-        }
     }
 
     public void scanProduct(View view){
-        Intent i = new Intent(MainActivity.this, ScannedBarcodeActivity.class);
+        Intent i = new Intent(MainActivity.this, ScannerActivity.class);
+        i.putExtra("source","product");
         startActivity(i);
     }
 

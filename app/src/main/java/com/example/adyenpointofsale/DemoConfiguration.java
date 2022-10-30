@@ -253,4 +253,10 @@ public class DemoConfiguration extends AppCompatActivity {
         //set the spinners adapter to the previously created one.
         availableTerminals.setAdapter(adapter);
     }
+
+    public void scanAcccountConfiguration(View view){
+        Intent i = new Intent(DemoConfiguration.this, ScannerActivity.class);
+        i.putExtra("source","configuration");
+        startActivity(i);
+    }
 }

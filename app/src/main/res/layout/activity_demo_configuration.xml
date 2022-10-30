@@ -321,6 +321,14 @@
                 android:textColor="@color/white"
                 app:layout_constraintTop_toTopOf="parent" />
             <Button
+                android:id="@+id/scanAccountConfig"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/adyen_blue_alt"
+                android:onClick="scanAcccountConfiguration"
+                android:text="Scan Quick Config QR" />
+            <Button
                 android:id="@+id/fetchterminalDemo"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
