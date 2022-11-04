@@ -123,15 +123,30 @@
                     android:textColor="@color/white"
                     />
             </LinearLayout>
-            <Button
-                android:id="@+id/scanButton"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:onClick="scanProduct"
-                android:backgroundTint="@color/adyen_blue_alt"
-                android:layout_marginBottom="20dp"
-                android:text="Scan" />
+                android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/scanButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:onClick="scanProduct"
+                    android:backgroundTint="@color/adyen_blue_alt"
+                    android:layout_marginBottom="20dp"
+                    android:text="Scan" />
+                <Button
+                    android:id="@+id/refundButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:onClick="refundGo"
+                    android:backgroundTint="@color/adyen_blue_alt"
+                    android:layout_marginBottom="20dp"
+                    android:text="Refund" />
+            </LinearLayout>
+
             <Button
                 android:id="@+id/paymentButton"
                 android:layout_width="match_parent"

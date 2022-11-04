@@ -260,6 +260,30 @@ public class ScannerActivity extends AppCompatActivity {
                             Intent i = new Intent(ScannerActivity.this, DemoConfiguration.class);
                             startActivity(i);
                             break;
+
+                            case "refund":
+                            String pspReference = barcodes.get(0).getDisplayValue();
+                            Intent r = new Intent(ScannerActivity.this, RefundActivity.class);
+                                r.putExtra("source","scanner");
+                            r.putExtra("pspReference",pspReference);
+                            startActivity(r);
+                            break;
+                        default:
+                            Log.i("source","Non JSON data 1");
+                            Toast.makeText(this, barcodes.get(0).getDisplayValue(), Toast.LENGTH_SHORT)
+                                    .show();
+                    }
+                }
+                else{
+                    Log.i("source","Non JSON data");
+                    switch (value){
+                        case "refund":
+                            String pspReference = barcodes.get(0).getDisplayValue();
+                            Intent r = new Intent(ScannerActivity.this, RefundActivity.class);
+                            r.putExtra("pspReference",pspReference);
+                            r.putExtra("source","scanner");
+                            startActivity(r);
+                            break;
                         default:
                             Toast.makeText(this, barcodes.get(0).getDisplayValue(), Toast.LENGTH_SHORT)
                                     .show();

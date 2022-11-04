@@ -22,6 +22,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AdyenPointOfSale">
         <activity
+            android:name=".RefundActivity"
+            android:exported="false" />
+        <activity
             android:name=".ScannerActivity"
             android:exported="false" />
 

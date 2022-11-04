@@ -2,25 +2,18 @@ package com.example.adyenpointofsale;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,8 +26,11 @@ import com.adyen.model.nexo.MessageCategoryType;
 import com.adyen.model.nexo.MessageClassType;
 import com.adyen.model.nexo.MessageHeader;
 import com.adyen.model.nexo.MessageType;
+import com.adyen.model.nexo.OriginalPOITransaction;
 import com.adyen.model.nexo.PaymentRequest;
 import com.adyen.model.nexo.PaymentTransaction;
+import com.adyen.model.nexo.ReversalReasonType;
+import com.adyen.model.nexo.ReversalRequest;
 import com.adyen.model.nexo.SaleData;
 import com.adyen.model.nexo.SaleToPOIRequest;
 import com.adyen.model.nexo.TransactionIdentification;
@@ -49,16 +45,15 @@ import org.json.JSONObject;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.security.cert.CertificateException;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.GregorianCalendar;
 import java.util.Random;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-public class MainActivity extends AppCompatActivity {
 
-    public float orderTotal = 0;
+public class RefundActivity extends AppCompatActivity {
+
     private String api_key=null;
     private String merchant_account=null;
     private String company_account = null;
@@ -66,30 +61,25 @@ public class MainActivity extends AppCompatActivity {
     private String local_key_version=null;
     private String local_key_identifier=null;
     private String local_key_phrase=null;
-    private String[] cameraPermission;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setTitle("Demo Home");
-        setContentView(R.layout.activity_main);
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+        setContentView(R.layout.activity_refund);
 
-        //Printing current WIFI connection
-        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-        //Getting preference
+        Bundle extras = getIntent().getExtras();
+        String value = extras.getString("source");
+        Log.i("source",value);
+        if(value != null && value.equals("scanner")){
+            Log.i("msg","gettingExtras");
+            String pspReference = extras.getString("pspReference");
+            EditText pspReferenceText = (EditText) findViewById(R.id.pspReference);
+            pspReferenceText.setText(pspReference);
+        }
+
+        Log.i("type",value);
         this.refreshReferences();
-
-        if(this.merchant_account!=null && this.api_key!=null && this.company_account!=null){
-        }
-        else{
-            Toast.makeText(getApplicationContext(), "Please complete application set up", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(MainActivity.this, DemoConfiguration.class);
-            startActivity(i);
-        }
     }
 
     // create an action bar button
@@ -108,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.settings) {
             // do something here
-            Intent i = new Intent(MainActivity.this, DemoConfiguration.class);
+            Intent i = new Intent(RefundActivity.this, DemoConfiguration.class);
             startActivity(i);
         }
 
@@ -126,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         this.local_key_version = prefs.getString("key_version",null);
     }
 
-    private SaleToPOIRequest generatePOIRequest() {
+    private SaleToPOIRequest generatePOIRequest(String transaction_id) {
         Random rnd = new Random();
         int number = rnd.nextInt(9999);
 
@@ -149,63 +139,35 @@ public class MainActivity extends AppCompatActivity {
         MessageHeader messageHeader = new MessageHeader();
         messageHeader.setProtocolVersion("3.0");
         messageHeader.setMessageClass( MessageClassType.SERVICE );
-        messageHeader.setMessageCategory( MessageCategoryType.PAYMENT );
+        messageHeader.setMessageCategory( MessageCategoryType.REVERSAL );
         messageHeader.setMessageType( MessageType.REQUEST );
         messageHeader.setSaleID(saleID);
         messageHeader.setServiceID(serviceID);
         messageHeader.setPOIID(POIID);
         saleToPOIRequest.setMessageHeader(messageHeader);
 
-        PaymentRequest paymentRequest = new PaymentRequest();
-        SaleData saleData = new SaleData();
-        TransactionIdentification saleTransactionID = new TransactionIdentification();
-        saleTransactionID.setTransactionID(transactionID);
+        ReversalRequest refundRequest = new ReversalRequest();
+        OriginalPOITransaction originalTransaction = new OriginalPOITransaction();
+        TransactionIdentification POITransctionID = new TransactionIdentification();
         try {
-            saleTransactionID.setTimeStamp(DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()));
+            POITransctionID.setTimeStamp(DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()));
         } catch (DatatypeConfigurationException e) {
             e.printStackTrace();
         }
-        saleData.setSaleTransactionID(saleTransactionID);
-        paymentRequest.setSaleData(saleData);
 
-        PaymentTransaction paymentTransaction = new PaymentTransaction();
-        AmountsReq amountsReq = new AmountsReq();
-        amountsReq.setCurrency(currency);
-        amountsReq.setRequestedAmount( BigDecimal.valueOf(orderTotal) );
-        paymentTransaction.setAmountsReq(amountsReq);
-        paymentRequest.setPaymentTransaction(paymentTransaction);
-        saleToPOIRequest.setPaymentRequest(paymentRequest);
+        POITransctionID.setTransactionID(transaction_id);
+        originalTransaction.setPOITransactionID(POITransctionID);
+        refundRequest.setOriginalPOITransaction((originalTransaction));
+        refundRequest.setReversalReason(ReversalReasonType.valueOf("MERCHANT_CANCEL"));
+        saleToPOIRequest.setReversalRequest(refundRequest);
 
         return saleToPOIRequest;
     }
 
-    public void AddToCart(View view) {
-        switch (view.getId()) {
-            case (R.id.plus1):
-                //stuff
-                orderTotal+=1;
-                break;
-            case (R.id.plus2):
-                //stuff
-                orderTotal+=2;
-                break;
-            case (R.id.plus4):
-                //stuff
-                orderTotal+=4;
-                break;
-            case (R.id.plus5):
-                //stuff
-                orderTotal+=5;
-                break;
-        }
-        TextView total = (TextView) findViewById(R.id.totalField);
-        total.setText(Float.toString(orderTotal));
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void makePayment(View view) throws FileNotFoundException, CertificateException {
-        Button paymentButton = (Button) findViewById(R.id.paymentButton);
-        paymentButton.setEnabled(false);
+    public void refund(View view) throws FileNotFoundException, CertificateException {
+        Button refundButton = (Button) findViewById(R.id.refundActButton);
+        refundButton.setEnabled(false);
         Switch goLocal = (Switch) findViewById(R.id.goLocal);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -217,8 +179,12 @@ public class MainActivity extends AppCompatActivity {
         config.setMerchantAccount(this.merchant_account);
         config.setApiKey(this.api_key);
 
+        //Refund ID
+        EditText pspReference = (EditText) findViewById(R.id.pspReference);
+        String refundTxnId = "."+pspReference.getText().toString();
+
         TerminalAPIResponse terminalAPIResponse = null;
-        SaleToPOIRequest saleToPOIRequest =  generatePOIRequest();
+        SaleToPOIRequest saleToPOIRequest =  generatePOIRequest(refundTxnId);
         TerminalAPIRequest terminalApiRequest = new TerminalAPIRequest();
         terminalApiRequest.setSaleToPOIRequest(saleToPOIRequest);
 
@@ -247,53 +213,42 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if(terminalAPIResponse.getSaleToPOIResponse()!= null){
-                byte[] decoded = Base64.getDecoder().decode(terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getAdditionalResponse());
-                String resultCode = terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getResult().toString();
+                byte[] decoded = Base64.getDecoder().decode(terminalAPIResponse.getSaleToPOIResponse().getReversalResponse().getResponse().getAdditionalResponse());
+                String resultCode = terminalAPIResponse.getSaleToPOIResponse().getReversalResponse().getResponse().getResult().toString();
 
-                Log.i("Info","The resultCode: "+terminalAPIResponse.getSaleToPOIResponse().getPaymentResponse().getResponse().getResult());
+                Log.i("Info","The resultCode: "+terminalAPIResponse.getSaleToPOIResponse().getReversalResponse().getResponse().getResult());
                 Log.i("Info","The additionalData"+new String(decoded));
                 Log.i("Info:","Completed Cloud Connection!");
 
                 if(resultCode.equalsIgnoreCase("success")){
-                    Toast.makeText(getApplicationContext(), "Payment is successful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Refund Request is successful", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     JSONObject additionalData = new JSONObject(new String(decoded));
                     String message = additionalData.getString("message");
                     String refusalReason = additionalData.getString("refusalReason");
-                    Toast.makeText(getApplicationContext(), "Payment failed: "+ message +"::"+refusalReason, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Payment Request failed: "+ message +"::"+refusalReason, Toast.LENGTH_LONG).show();
                 }
-                paymentButton.setEnabled(true);
+                refundButton.setEnabled(true);
             }else{
                 if(terminalAPIResponse.getSaleToPOIRequest().getEventNotification()!= null){
                     Toast.makeText(getApplicationContext(), terminalAPIResponse.getSaleToPOIRequest().getEventNotification().getEventDetails(), Toast.LENGTH_SHORT).show();
                 }
                 Toast.makeText(getApplicationContext(), "Unable to establish connection with terminal via cloud", Toast.LENGTH_LONG).show();
-                paymentButton.setEnabled(true);
+                refundButton.setEnabled(true);
             }
         } catch (Exception e) {
             System.out.println("EXCEPTION!");
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
-            paymentButton.setEnabled(true);
+            refundButton.setEnabled(true);
         }
 
     }
 
-    public void scanProduct(View view){
-        Intent i = new Intent(MainActivity.this, ScannerActivity.class);
-        i.putExtra("source","product");
-        startActivity(i);
-    }
-
-    public void refundGo(View view){
-        Intent i = new Intent(MainActivity.this, RefundActivity.class);
-        i.putExtra("source","mainactivity");
-        startActivity(i);
-    }
-
-    public void clickSetting(View view){
-        Intent i = new Intent(MainActivity.this, DemoConfiguration.class);
+    public void refundScan(View view){
+        Intent i = new Intent(RefundActivity.this, ScannerActivity.class);
+        i.putExtra("source","refund");
         startActivity(i);
     }
 }
