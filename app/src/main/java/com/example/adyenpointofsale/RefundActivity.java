@@ -116,7 +116,7 @@ public class RefundActivity extends AppCompatActivity {
         this.local_key_version = prefs.getString("key_version",null);
     }
 
-    private SaleToPOIRequest generatePOIRequest(String transaction_id) {
+    private SaleToPOIRequest generatePOIRequest(String transaction_id,Double refund_amount) {
         Random rnd = new Random();
         int number = rnd.nextInt(9999);
 
@@ -159,6 +159,11 @@ public class RefundActivity extends AppCompatActivity {
         originalTransaction.setPOITransactionID(POITransctionID);
         refundRequest.setOriginalPOITransaction((originalTransaction));
         refundRequest.setReversalReason(ReversalReasonType.valueOf("MERCHANT_CANCEL"));
+
+        if(refund_amount>0){
+            BigDecimal convertedRefundAmount = new BigDecimal(refund_amount);
+            refundRequest.setReversedAmount(convertedRefundAmount);
+        }
         saleToPOIRequest.setReversalRequest(refundRequest);
 
         return saleToPOIRequest;
@@ -183,8 +188,21 @@ public class RefundActivity extends AppCompatActivity {
         EditText pspReference = (EditText) findViewById(R.id.pspReference);
         String refundTxnId = "."+pspReference.getText().toString();
 
+        //Refund Amount
+        EditText refundAmountBox = (EditText) findViewById(R.id.refund_amount);
+        String refundAmountString = refundAmountBox.getText().toString();
+        double refundAmount =0.0;
+        try {
+            refundAmount = Double.parseDouble(refundAmountString);
+            // Now 'refundAmount' contains the user-inputted double value
+            // You can use this value as needed
+        } catch (NumberFormatException e) {
+            // Handle the case where the input is not a valid double
+            Toast.makeText(this, "Invalid input. Please enter a valid number.", Toast.LENGTH_SHORT).show();
+        }
+
         TerminalAPIResponse terminalAPIResponse = null;
-        SaleToPOIRequest saleToPOIRequest =  generatePOIRequest(refundTxnId);
+        SaleToPOIRequest saleToPOIRequest =  generatePOIRequest(refundTxnId,refundAmount);
         TerminalAPIRequest terminalApiRequest = new TerminalAPIRequest();
         terminalApiRequest.setSaleToPOIRequest(saleToPOIRequest);
 

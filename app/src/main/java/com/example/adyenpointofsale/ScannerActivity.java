@@ -45,6 +45,8 @@ public class ScannerActivity extends AppCompatActivity {
     private Preview previewUseCase;
     private ImageAnalysis analysisUseCase;
 
+    private boolean onSuccessListenerCalled = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -191,7 +193,8 @@ public class ScannerActivity extends AppCompatActivity {
     }
 
     private void onSuccessListener(List<Barcode> barcodes) {
-        if (barcodes.size() > 0) {
+        if (!this.onSuccessListenerCalled && barcodes.size() > 0) {
+            this.onSuccessListenerCalled =true;
             Bundle extras = getIntent().getExtras();
            try {
                String value = extras.getString("source");
