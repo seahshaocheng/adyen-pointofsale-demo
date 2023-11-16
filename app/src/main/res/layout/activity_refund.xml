@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:ems="10"
-            />
+            android:textAlignment="center" />
 
         <TextView
             android:id="@+id/textView2"
@@ -38,12 +38,12 @@
 
         <EditText
             android:id="@+id/refund_amount"
-            android:inputType="numberDecimal"
-            android:hint="Digits with decimal only"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:ems="10" />
+            android:ems="10"
+            android:inputType="numberDecimal"
+            android:textAlignment="center" />
 
         <requestFocus />
 
