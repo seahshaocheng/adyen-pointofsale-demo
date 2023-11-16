@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceControl;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,6 +35,7 @@ import com.adyen.model.nexo.ReversalRequest;
 import com.adyen.model.nexo.SaleData;
 import com.adyen.model.nexo.SaleToPOIRequest;
 import com.adyen.model.nexo.TransactionIdentification;
+import com.adyen.model.terminal.SaleToAcquirerData;
 import com.adyen.model.terminal.TerminalAPIRequest;
 import com.adyen.model.terminal.TerminalAPIResponse;
 import com.adyen.model.terminal.security.SecurityKey;
@@ -130,6 +132,10 @@ public class RefundActivity extends AppCompatActivity {
         Long tsLong = System.currentTimeMillis()/1000;
         String currency = prefs.getString("tender_currency",null);
 
+        SaleData salesData = new SaleData();
+        SaleToAcquirerData salesToAcquirerData = new SaleToAcquirerData();
+
+
         String saleID = POSID;
         String serviceID = tsLong.toString();
         String POIID = selectedPOI;
@@ -163,7 +169,21 @@ public class RefundActivity extends AppCompatActivity {
         if(refund_amount>0){
             BigDecimal convertedRefundAmount = new BigDecimal(refund_amount);
             refundRequest.setReversedAmount(convertedRefundAmount);
+            salesToAcquirerData.setCurrency(currency);
+            TransactionIdentification refundTransactionId = new TransactionIdentification();
+            refundTransactionId.setTransactionID("rev0999");
+
+            try {
+                refundTransactionId.setTimeStamp(DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()));
+            } catch (DatatypeConfigurationException e) {
+                throw new RuntimeException(e);
+            }
+            salesData.setSaleTransactionID(refundTransactionId);
         }
+
+        salesData.setSaleToAcquirerData(salesToAcquirerData);
+
+        refundRequest.setSaleData(salesData);
         saleToPOIRequest.setReversalRequest(refundRequest);
 
         return saleToPOIRequest;
